@@ -1,8 +1,9 @@
 import PlayerTank from "./PlayerTank.js";
+import {DetectColision} from './Utils.js'
 
-const container = document.getElementById('container')
-const playerTank = new PlayerTank(document.getElementById('playerTank'))
-const EnemyTank = new PlayerTank(document.getElementById('enemyTank'))
+let container = document.getElementById('container')
+let playerTank = new PlayerTank(document.getElementById('playerTank'))
+let enemyTank = new PlayerTank(document.getElementById('enemyTank'))
 
 let lastTime
 
@@ -44,24 +45,37 @@ function checkKey(e) {
 }
 
 function shot(player){
+
+    //Create 'bullet' block
+    let newBullet = document.createElement('div')
+    newBullet.classList.add('block')
     
     if(player.facing = 'top'){
-
-        //Create 'bullet' block
-        let newBullet = document.createElement('div')
-        newBullet.classList.add('block')
         //Add to the container
         container.appendChild(newBullet)
         //Move to the front of cannon
         newBullet.style.top = `${player.top - 22}px`
         newBullet.style.left = `${player.left + 22}px`
+        // Catch child nodes of enemies (every block)
+        let enemyBlocks = enemyTank.blockChilds
+
 
         const colision = setInterval( () => {
-            if( (pxToNumber(newBullet) - 20) > container.offsetLeft){
-                clearInterval
+
+            if( (pxToNumber(newBullet) - 20) < -2){
+                newBullet.remove()
+                clearInterval(colision)
             }
-            newBullet.style.top = `${newBullet.style.top.replace('px', '') - 20}px`
-        }, 500)
+            newBullet.style.top = `${newBullet.style.top.replace('px', '') - 15}px`
+
+            enemyBlocks.forEach(block => {
+                if( DetectColision(newBullet, block) ){
+                    newBullet.remove()
+                    clearInterval(colision)
+                }
+            });
+            
+        }, 50)
 
     }
     

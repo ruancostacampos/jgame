@@ -15,9 +15,16 @@ body{
     border: solid 2px black;
 }
 
-#playerTank, .enemyTank{
+#playerTank{
     position: relative;
     top: 200px;
+    width: 64px;
+    height: 64px;
+}
+
+#enemyTank{
+    position: relative;
+    top: -62px;
     width: 64px;
     height: 64px;
 }

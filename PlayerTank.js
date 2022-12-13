@@ -36,6 +36,14 @@ export default class PlayerTank{
         
     }
 
+    get elem(){
+        return this.playerTankElem
+    }
+
+    get blockChilds(){
+        return this.playerTankElem.childNodes
+    }
+
     get top(){
         return parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('top'))
     }
@@ -48,7 +56,7 @@ export default class PlayerTank{
         
         if(this.facing === 'top'){
             let currentTop = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('top'))
-            this.playerTankElem.style.top = `${currentTop - 20}px`
+            this.playerTankElem.style.top = `${currentTop - 22}px`
         }else{
             this.playerTankElem.style.transform = 'rotate(0deg)'
             this.facing = 'top'
@@ -60,7 +68,7 @@ export default class PlayerTank{
 
         if(this.facing === 'left'){
             let currentLeft = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
-            this.playerTankElem.style.left = `${currentLeft + 20}px`
+            this.playerTankElem.style.left = `${currentLeft + 22}px`
         }else{
             this.playerTankElem.style.transform = 'rotate(90deg)'
             this.facing = 'left'
@@ -73,7 +81,7 @@ export default class PlayerTank{
 
         if(this.facing === 'right'){
             let currentLeft = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
-            this.playerTankElem.style.left = `${currentLeft - 20}px`
+            this.playerTankElem.style.left = `${currentLeft - 22}px`
         }else{
             this.playerTankElem.style.transform = 'rotate(-90deg)'
             this.facing = 'right'
@@ -85,7 +93,7 @@ export default class PlayerTank{
 
         if(this.facing === 'down'){
             let currentTop = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('top'))
-            this.playerTankElem.style.top = `${currentTop + 20}px`
+            this.playerTankElem.style.top = `${currentTop + 22}px`
         }else{
             this.playerTankElem.style.transform = 'rotate(180deg)'
             this.facing = 'down'
