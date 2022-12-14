@@ -44,6 +44,7 @@ export default class PlayerTank{
         return this.playerTankElem.childNodes
     }
 
+
     get top(){
         return parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('top'))
     }
@@ -62,30 +63,33 @@ export default class PlayerTank{
             this.facing = 'top'
         }
         
+        return 
     }
+
+    moveRight(){
+        if(this.facing === 'right'){
+            let currentLeft = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
+            this.playerTankElem.style.left = `${currentLeft + 22}px`
+        }else{
+            this.playerTankElem.style.transform = 'rotate(90deg)'
+            this.facing = 'right'
+        }
+
+        return 
+    }
+
 
     moveLeft(){
 
         if(this.facing === 'left'){
             let currentLeft = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
-            this.playerTankElem.style.left = `${currentLeft + 22}px`
-        }else{
-            this.playerTankElem.style.transform = 'rotate(90deg)'
-            this.facing = 'left'
-        }
-
-    }
-
-
-    moveRight(){
-
-        if(this.facing === 'right'){
-            let currentLeft = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
             this.playerTankElem.style.left = `${currentLeft - 22}px`
         }else{
             this.playerTankElem.style.transform = 'rotate(-90deg)'
-            this.facing = 'right'
+            this.facing = 'left'
         }
+
+        return
 
     }
 
@@ -98,6 +102,8 @@ export default class PlayerTank{
             this.playerTankElem.style.transform = 'rotate(180deg)'
             this.facing = 'down'
         }
+
+        return
 
     }
 
