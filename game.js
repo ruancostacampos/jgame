@@ -20,16 +20,16 @@ function checkKey(e) {
     e = e || window.event;
 
     if (e.keyCode == '38') {
-        playerTank.moveUp()
+        playerTank.moveUp(enemyTanks)
     }
     else if (e.keyCode == '40') {
-        playerTank.moveDown()
+        playerTank.moveDown(enemyTanks)
     }
     else if (e.keyCode == '37') {
-        playerTank.moveLeft()
+        playerTank.moveLeft(enemyTanks)
     }
     else if (e.keyCode == '39') {
-        playerTank.moveRight()
+        playerTank.moveRight(enemyTanks)
     }
     else if (e.keyCode == '32') {
         shot(playerTank)
@@ -47,7 +47,7 @@ function shot(player) {
     newBullet.classList.add('block')
 
     //Move the bullet to the front of cannon 
-    if (facing === 'top') {
+    if (facing === 'up') {
         newBullet.style.top = `${player.top - 22}px`
         newBullet.style.left = `${player.left + 22}px`
     }
@@ -72,6 +72,26 @@ function shot(player) {
 
     if (detectBorderColision(newBullet)) {
         newBullet.remove()
+        return
+    }
+
+
+    let startColiding
+    enemyTanks.forEach( (tank, index) => {
+
+        tank.elem.childNodes.forEach((block) => {
+            if (detectColision(newBullet, block)) {
+                newBullet.remove()
+                tank.elem.remove()
+                enemyTanks.splice(index, 1)
+                startColiding = true
+            }
+        })
+
+    });
+
+    if(startColiding){
+        return
     }
 
 
@@ -79,7 +99,7 @@ function shot(player) {
     // Function who run move the bullet
     const colision = setInterval(() => {
 
-        if (facing === 'top') {
+        if (facing === 'up') {
             newBullet.style.top = `${topPxToNumber(newBullet) - 22}px`
         }
 
@@ -99,21 +119,26 @@ function shot(player) {
         if (detectBorderColision(newBullet)) {
             newBullet.remove()
             clearInterval(colision)
+            return
         }
 
         //Stop and remove bullet when reach enemy
-        enemyTanks.forEach(tank => {
+        enemyTanks.forEach( (tank, index) => {
 
             tank.elem.childNodes.forEach((block) => {
                 if (detectColision(newBullet, block)) {
                     newBullet.remove()
+                    tank.elem.remove()
+                    enemyTanks.splice(index, 1)
                     clearInterval(colision)
                 }
             })
 
         });
 
-    }, 80)
+        return
+
+    }, 40)
 
 
 
@@ -127,52 +152,65 @@ const detectBorderColision = (elem) => {
 }
 
 const spawnEnemyTank = () => {
-    let random = Math.floor(Math.random() * 12)
-    let initialTop = 2
-    
-    for(let i = 0; i < random; i++){
-        initialTop = initialTop + 22
+
+    let initialTop
+    let initialLeft
+
+    const sortPosition = () => {
+
+        initialTop = 2
+        initialLeft = 2
+        
+        let random = Math.floor(Math.random() * 12)
+        
+        for(let i = 0; i < random; i++){
+            initialTop = initialTop + 22
+        }
+
+
+        random = Math.floor(Math.random() * 7)
+        
+        for(let i = 0; i < random; i++){
+            initialLeft = initialLeft + 22
+        }
+
     }
 
-    console.log('Initial top -> ' + initialTop)
-
-    random = Math.floor(Math.random() * 7)
-    let initialLeft = 2
-    
-    for(let i = 0; i < random; i++){
-        initialLeft = initialLeft + 22
-    }
-
-     console.log('Initial left -> ' + initialLeft)
+    sortPosition()
 
     let newTankDiv = document.createElement('div')
     newTankDiv.classList.add('enemyTank')
-    newTankDiv.style.top = `${initialTop}px`
-    newTankDiv.style.left = `${initialLeft}px`
     let enemyTank = new PlayerTank(newTankDiv)
     container.appendChild(newTankDiv)
+
     
-    //Verify if the new tank colides with other tanks
-    if(enemyTanks.length > 0){
-        
+    while(true){
+
+        let colided = false
+
+        //Verify if existing tanks colides with new tank
         enemyTanks.forEach( (tank) => {
-            if( detectColision(tank.elem, enemyTank.elem) ){
-                newTankDiv.remove()
-                spawnEnemyTank()
-                return
+            if(detectColision(tank.elem, enemyTank.elem)){
+                colided = true
             }
         })
 
+        //Verify if colides with player tank
+        if(!colided && detectColision(playerTank.elem, enemyTank.elem) ){
+            console.log('Colidiu com o player')
+            colided = true
+        }
+
+        if(colided){
+            sortPosition()
+            newTankDiv.style.top = `${initialTop}px`
+            newTankDiv.style.left = `${initialLeft}px`
+        }else{
+            enemyTanks.push(enemyTank)
+            break;
+        }
 
     }
-    
-    if(detectColision(enemyTank.elem, playerTank.elem)){
-        newTankDiv.remove()
-        spawnEnemyTank()
-        return
-    }
-
-    enemyTanks.push(enemyTank)
 }
 
 
@@ -180,9 +218,9 @@ const spawnEnemyTank = () => {
 const game = setInterval(() => {
 
     let currentEnemies = enemyTanks.length
+    console.log(enemyTanks)
 
     if (currentEnemies < 1) {
-        spawnEnemyTank()
         spawnEnemyTank()
     }
 
