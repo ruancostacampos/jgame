@@ -1,3 +1,12 @@
+import 
+    { 
+        colideWithLeftBorder, 
+        colideWithRightBorder, 
+        colideWithTopBorder, 
+        colideWithBottomBorder
+    }
+from "./Utils.js"
+
 export default class PlayerTank{
  
     constructor(playerTankElem){
@@ -44,7 +53,6 @@ export default class PlayerTank{
         return this.playerTankElem.childNodes
     }
 
-
     get top(){
         return parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('top'))
     }
@@ -53,26 +61,41 @@ export default class PlayerTank{
         return parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
     }
 
+
     moveUp(){
-        
         if(this.facing === 'top'){
+            if(colideWithTopBorder(this.elem)){
+                return
+            }
             let currentTop = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('top'))
             this.playerTankElem.style.top = `${currentTop - 22}px`
+
         }else{
             this.playerTankElem.style.transform = 'rotate(0deg)'
             this.facing = 'top'
+
         }
         
         return 
     }
 
     moveRight(){
+
+
         if(this.facing === 'right'){
+            
+            if(colideWithRightBorder(this.elem)){
+                return
+            }
+
             let currentLeft = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
             this.playerTankElem.style.left = `${currentLeft + 22}px`
+
         }else{
+
             this.playerTankElem.style.transform = 'rotate(90deg)'
             this.facing = 'right'
+
         }
 
         return 
@@ -82,11 +105,19 @@ export default class PlayerTank{
     moveLeft(){
 
         if(this.facing === 'left'){
+
+            if(colideWithLeftBorder(this.elem)){
+                return
+            }
+
             let currentLeft = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('left'))
             this.playerTankElem.style.left = `${currentLeft - 22}px`
+
         }else{
+
             this.playerTankElem.style.transform = 'rotate(-90deg)'
             this.facing = 'left'
+
         }
 
         return
@@ -96,12 +127,21 @@ export default class PlayerTank{
     moveDown(){
 
         if(this.facing === 'down'){
+
+            if(colideWithBottomBorder(this.elem)){
+                return
+            }
+
             let currentTop = parseFloat(getComputedStyle(this.playerTankElem).getPropertyValue('top'))
             this.playerTankElem.style.top = `${currentTop + 22}px`
+
         }else{
+
             this.playerTankElem.style.transform = 'rotate(180deg)'
             this.facing = 'down'
+
         }
+
 
         return
 
